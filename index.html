@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tithi Singh Finance Portfolio</title>
+<meta name="description" content="Finance analyst portfolio: peer financial-statement analysis of Coca-Cola, PepsiCo and Monster, and a DCF valuation of Monster Beverage, built from SEC filings.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5f7;--panel:#fff;--ink:#0d2236;--muted:#53677a;--rule:#dbe3ea;--rule-strong:#b7c4d0;--accent:#0b6e8f;--accent-soft:#7fb7c9;--accent-ink:#fff;
+--pos:#0f845c;--neg:#c43c32;--c-ko:#c8102e;--c-pep:#1f5fbf;--c-mnst:#1b8a6b;--band:#0d2236;--band-ink:#eaf1f6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1722;--panel:#112334;--ink:#e6eef5;--muted:#9bb0c2;--rule:#223a50;--rule-strong:#3a5671;--accent:#4cc0e3;--accent-soft:#2c6f86;--accent-ink:#06202b;
+--pos:#3fd19b;--neg:#ff7a6e;--c-ko:#ff5a6e;--c-pep:#6fa4ff;--c-mnst:#3fd1a4;--band:#060f17;--band-ink:#e6eef5;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1722;--panel:#112334;--ink:#e6eef5;--muted:#9bb0c2;--rule:#223a50;--rule-strong:#3a5671;--accent:#4cc0e3;--accent-soft:#2c6f86;--accent-ink:#06202b;
+--pos:#3fd19b;--neg:#ff7a6e;--c-ko:#ff5a6e;--c-pep:#6fa4ff;--c-mnst:#3fd1a4;--band:#060f17;--band-ink:#e6eef5;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono,.t td,.kpi b,.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;align-items:center;gap:20px;height:56px}
+.brand{font-weight:700;letter-spacing:.01em}
+nav{display:flex;gap:18px;margin-left:auto;font-size:14px}nav a{color:var(--muted);text-decoration:none}nav a:hover{color:var(--ink)}
+#theme,.chip,.btn{font:inherit;font-size:13px;border:1px solid var(--rule-strong);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chip[aria-pressed="true"],.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hero{padding:64px 0 36px}
+.eyebrow{font:500 12px 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(40px,7vw,76px);line-height:1;margin:12px 0 18px;letter-spacing:-.025em;font-weight:700}
+.lede{font-size:clamp(18px,2.2vw,22px);max-width:760px;color:var(--muted);margin:0}
+.strip{background:var(--band);color:var(--band-ink);margin-top:28px}
+.strip .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.strip .cell{padding:18px 20px;border-left:1px solid rgba(255,255,255,.14)}.strip .cell:first-child{border-left:0;padding-left:0}
+.strip small{display:block;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.strip b{font:600 26px 'IBM Plex Mono',monospace}.strip span{font-size:13px;opacity:.8;display:block}
+section{padding:56px 0;border-bottom:1px solid var(--rule)}
+.num{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.1em}
+h2{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:6px 0 10px;letter-spacing:-.02em}
+h3{font-size:19px;margin:0 0 6px;line-height:1.3}
+.sub{color:var(--muted);max-width:760px;margin:0 0 28px}
+.brief{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:0 0 36px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:20px}
+.card h4{margin:0 0 8px;font:600 12px 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.card ul{margin:0;padding-left:18px}.card li{margin:0 0 7px}.card p{margin:0}
+.panel,.card,.kpi{min-width:0}.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:20px;margin:0 0 20px}
+.take{margin:10px 0 14px;font-weight:500;max-width:880px;min-height:3.2em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.cv{position:relative;height:340px}
+.cv.tall{height:300px}
+.t{width:100%;border-collapse:collapse;font-size:14px}
+.t th,.t td{padding:9px 10px;border-bottom:1px solid var(--rule);text-align:right}
+.t th:first-child,.t thead th{text-align:left}.t thead th{font:600 12px 'IBM Plex Sans';color:var(--muted)}
+.t td:first-child,.t thead th:not(:first-child){text-align:right}
+.t .x{text-align:center;color:var(--muted);padding:9px 2px}
+.tw{overflow-x:auto}
+.heat td{text-align:center;min-width:84px}.heat small{display:block;font-size:11px;opacity:.8}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 20px}
+.kpi{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:16px}
+.kpi small{display:block;color:var(--muted);font-size:12px}.kpi b{font-size:26px;display:block;margin:4px 0 2px}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.up{font-size:13px;font-weight:600}
+.ctl{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 28px}
+.ctl label{display:block;font-size:13px;color:var(--muted)}.ctl label span{float:right;color:var(--ink);font:600 13px 'IBM Plex Mono',monospace}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.ctl input[type=number]{width:110px;font:600 14px 'IBM Plex Mono',monospace;padding:6px 8px;border:1px solid var(--rule-strong);border-radius:6px;background:var(--bg);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px}
+.verdict{border-left:4px solid var(--accent);background:var(--panel);padding:18px 22px;border-radius:0 10px 10px 0;margin:0 0 20px}
+.src{list-style:none;padding:0;margin:0}.src li{padding:10px 0;border-bottom:1px solid var(--rule)}.src b{display:block}.src span{font:13px 'IBM Plex Mono',monospace;color:var(--muted)}
+.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.note{font-size:13px;color:var(--muted)}
+footer{padding:36px 0 60px;font-size:13px;color:var(--muted)}
+@media(max-width:820px){.brief,.grid2,.skills{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:1fr 1fr}.ctl{grid-template-columns:1fr}
+nav{display:none}.strip .wrap{grid-template-columns:1fr}.strip .cell{border-left:0;border-top:1px solid rgba(255,255,255,.14);padding-left:0}.strip .cell:first-child{border-top:0}.cv{height:300px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style></head><body>
+<header class="top"><div class="wrap"><span class="brand">Tithi Singh</span>
+<nav aria-label="Sections"><a href="#p1">Project 1</a><a href="#p2">Project 2</a><a href="#method">Sources</a><a href="#contact">Contact</a></nav>
+<button id="theme" type="button" aria-pressed="false">Dark</button></div></header>
+<main>
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Finance analyst portfolio · built on SEC filings</div>
+<h1>Tithi Singh</h1>
+<p class="lede">Two projects that do what an equity or corporate finance analyst does every week: read the filings, benchmark companies against each other, and turn the numbers into a valuation view you can defend. Every figure comes from the companies' own 10-K and 10-Q filings.</p>
+</div>
+<div class="strip"><div class="wrap">
+<div class="cell"><small>Project 1 · Peer analysis</small><b>3 companies</b><span>5 years of statements each, FY2021 to FY2025</span></div>
+<div class="cell"><small>Project 2 · Valuation</small><b>$30.89 vs $44.22</b><span>DCF value per share against Monster's price</span></div>
+<div class="cell"><small>Data</small><b>10 SEC filings</b><span>10-K, 10-Q and 8-K, cross-checked with accounting identities</span></div>
+</div></div></div>
+
+<section><div class="wrap">
+<div class="num">SKILLS DEMONSTRATED</div><h2>What these projects show</h2>
+<div class="skills">
+<div class="card"><h4>Analysis</h4><ul><li>Three-statement analysis and common-size margins</li><li>DuPont return on equity decomposition</li><li>Working capital, leverage and cash conversion</li></ul></div>
+<div class="card"><h4>Valuation</h4><ul><li>Discounted cash flow with CAPM discount rate</li><li>WACC and terminal growth sensitivity</li><li>Reverse DCF and trading comparables</li></ul></div>
+<div class="card"><h4>Rigor</h4><ul><li>Primary sources only, with accession numbers</li><li>Accounting identities checked in code</li><li>Stock split and fiscal calendar adjustments</li></ul></div>
+</div></div></section>
+
+<section id="p1"><div class="wrap">
+<div class="num">PROJECT 1</div>
+<h2>Coca-Cola, PepsiCo and Monster: who earns the best returns?</h2>
+<p class="sub">A five-year, side-by-side read of the three largest listed beverage companies. Same questions for each: how fast does it grow, how much of each dollar becomes profit and cash, how much debt does it carry, and what does it do with the cash.</p>
+<div class="brief">
+<div class="card"><h4>What I analyzed</h4><p>Income statements for FY2021 to FY2025 and balance sheets for FY2022 to FY2025 from each company's 10-K. I computed growth, margins, free cash flow, DuPont ROE, working capital days, net debt / EBITDA and shareholder payouts, and adjusted for one-off charges.</p></div>
+<div class="card"><h4>What I found</h4><ul>
+<li>Monster is the growth story: 10.6% revenue and 10.7% EPS CAGR, with 29.2% operating margin and no debt.</li>
+<li>Coca-Cola is the margin story: 28.7% operating margin and 41% ROE, driven more by profitability than by leverage.</li>
+<li>PepsiCo is the stretched one: 12.2% margin, EPS growth of just 2.2% a year, 2.7x net debt / EBITDA, and a payout above free cash flow.</li></ul></div>
+<div class="card"><h4>So what</h4><p>Quality and growth are priced very differently across the group, which sets up Project 2: Coca-Cola and Monster trade at 28x and 41x earnings, PepsiCo at 17x. The market is paying for margin and growth, not size.</p></div>
+</div>
+
+<div class="panel"><h3>FY2025 scorecard</h3><div class="tw"><table class="t"><thead><tr><th></th><th>Coca-Cola</th><th>PepsiCo</th><th>Monster</th></tr></thead><tbody><tr><th scope="row">Revenue FY2025</th><td>$47,941M</td><td>$93,925M</td><td>$8,294M</td></tr><tr><th scope="row">Revenue CAGR 2021–25</th><td>5.5%</td><td>4.3%</td><td>10.6%</td></tr><tr><th scope="row">EPS CAGR 2021–25</th><td>7.8%</td><td>2.2%</td><td>10.7%</td></tr><tr><th scope="row">Gross margin</th><td>61.6%</td><td>54.1%</td><td>55.8%</td></tr><tr><th scope="row">Operating margin</th><td>28.7%</td><td>12.2%</td><td>29.2%</td></tr><tr><th scope="row">Free cash flow margin</th><td>11.0%</td><td>8.2%</td><td>23.7%</td></tr><tr><th scope="row">Return on equity</th><td>40.7%</td><td>40.4%</td><td>23.1%</td></tr><tr><th scope="row">Net debt / EBITDA</th><td>2.0x</td><td>2.7x</td><td>net cash</td></tr></tbody></table></div></div>
+
+<div class="panel"><h3>Growth and profitability trends</h3><p class="note">Choose a metric. Click a legend label to hide a company.</p>
+<div class="chips" id="chips-trend" role="group" aria-label="Metric"></div>
+<p class="take" id="take-trend"></p><div class="cv"><canvas id="c-trend" role="img" aria-label="Line chart comparing the three companies on the selected metric, 2021 to 2025"></canvas></div></div>
+
+<div class="panel"><h3>Reported vs underlying operating margin</h3><p class="note">One-off charges can hide or exaggerate trends. Pick a company to see margin before impairments and other operating charges.</p>
+<div class="chips" id="chips-quality" role="group" aria-label="Company"></div>
+<p class="take" id="take-quality"></p><div class="cv tall"><canvas id="c-quality" role="img" aria-label="Bar chart of reported and underlying operating margin by year"></canvas></div></div>
+
+<div class="grid2">
+<div class="panel"><h3>What drives return on equity (DuPont)</h3><div class="chips" id="chips-dupont" role="group" aria-label="Year"></div>
+<div class="cv tall"><canvas id="c-dupont" role="img" aria-label="Bar chart of return on equity by company for the selected year"></canvas></div>
+<div class="tw" id="dupont-table"></div><p class="take" id="take-dupont" style="min-height:0"></p></div>
+<div class="panel"><h3>Working capital and liquidity</h3><div class="chips" id="chips-wc" role="group" aria-label="Metric"></div>
+<p class="take" id="take-wc"></p><div class="cv tall"><canvas id="c-wc" role="img" aria-label="Grouped bar chart of working capital metric by company and year"></canvas></div></div>
+</div>
+
+<div class="grid2">
+<div class="panel"><h3>Leverage: net debt / EBITDA</h3><p class="take" style="min-height:0">Below zero means more cash and investments than debt. Monster has been net cash throughout; PepsiCo's leverage rose in FY2025 as debt increased and EBITDA fell.</p><div class="cv tall"><canvas id="c-lev" role="img" aria-label="Line chart of net debt to EBITDA by company, 2022 to 2025"></canvas></div></div>
+<div class="panel"><h3>Where the cash goes</h3><div class="chips" id="chips-cash" role="group" aria-label="Company"></div>
+<p class="take" id="take-cash"></p><div class="cv tall"><canvas id="c-cash" role="img" aria-label="Stacked bars of capex, dividends and buybacks with operating cash flow line"></canvas></div></div>
+</div>
+<p class="note">EBITDA = operating income + depreciation and amortization. Equity and assets are year-end values. Payables are excluded from working capital because Coca-Cola and PepsiCo combine them with accrued liabilities. Monster EPS is restated for the 2-for-1 split of August 2026.</p>
+</div></section>
+
+<section id="p2"><div class="wrap">
+<div class="num">PROJECT 2</div>
+<h2>Monster Beverage at $44.22: what has to go right?</h2>
+<p class="sub">A discounted cash flow valuation built on trailing twelve months to June 2026, tested against Coca-Cola and PepsiCo multiples. Move the assumptions and watch the value, sensitivity table, reverse DCF and football field update.</p>
+<div class="brief">
+<div class="card"><h4>What I analyzed</h4><p>Whether Monster's share price is supported by its cash flows. I built TTM figures (FY2025 plus the first six months of 2026 minus the first six months of 2025), forecast five years of free cash flow, discounted at a CAPM cost of equity of 7.9% (Monster has no debt), and added Monster's $4,201M of cash and investments.</p></div>
+<div class="card"><h4>What I found</h4><ul>
+<li>Base case value is <b>$30.89</b> per share, 30% below the $44.22 price. Bear to bull: $24 to $41.</li>
+<li>Reverse DCF: the price needs about <b>22%</b> annual growth for five years at a 29% margin. Revenue grew 23% in the latest six months, so it is possible, but with no room for a slowdown.</li>
+<li>On multiples, Monster trades at 29x EBITDA against 27x for Coca-Cola and 12x for PepsiCo.</li></ul></div>
+<div class="card"><h4>So what</h4><p>The stock is priced for the recent pace to hold. My view (educational): the business is excellent, but at this price the margin of safety is thin. I would want either a price nearer the base case or evidence that 20%+ growth is lasting, such as international share gains.</p></div>
+</div>
+
+<div class="kpis">
+<div class="kpi"><small>DCF value per share</small><b id="o-ps"></b><span class="up" id="o-up"></span></div>
+<div class="kpi"><small>Share price</small><b id="o-px"></b><span class="note">editable below</span></div>
+<div class="kpi"><small>Growth the price implies</small><b id="o-imp"></b><span class="note">per year, 5 years (reverse DCF)</span></div>
+<div class="kpi"><small>Terminal value share of EV</small><b id="o-tv"></b><span class="note">EV <span id="o-ev"></span></span></div>
+</div>
+
+<div class="panel"><h3>Assumptions</h3>
+<div class="row"><span class="note">Scenario:</span><button class="btn" data-scn="bear" aria-pressed="false">Bear</button><button class="btn" data-scn="base" aria-pressed="true">Base</button><button class="btn" data-scn="bull" aria-pressed="false">Bull</button><button class="btn" id="reset" type="button">Reset</button></div>
+<div class="ctl">
+<div><label for="s-g1">Year 1 revenue growth <span id="lb-g1"></span></label><input id="s-g1" type="range" min="0" max="35" step="0.5"></div>
+<div><label for="s-g5">Year 5 revenue growth <span id="lb-g5"></span></label><input id="s-g5" type="range" min="0" max="20" step="0.5"></div>
+<div><label for="s-m">Operating margin <span id="lb-m"></span></label><input id="s-m" type="range" min="20" max="36" step="0.5"></div>
+<div><label for="s-w">Discount rate (WACC) <span id="lb-w"></span></label><input id="s-w" type="range" min="5" max="12" step="0.1"></div>
+<div><label for="s-tg">Terminal growth <span id="lb-tg"></span></label><input id="s-tg" type="range" min="1" max="4.5" step="0.25"></div>
+<div><label for="s-px">Share price ($)</label><input id="s-px" type="number" min="1" step="0.01"></div>
+</div>
+<p class="note" style="margin-top:14px">Fixed: tax rate 24%, D&amp;A 1.3% and capex 1.6% of revenue (TTM capex is 1.5%), working capital 15% of incremental revenue. Growth fades in a straight line from Year 1 to Year 5.</p></div>
+
+<div class="grid2">
+<div class="panel"><h3>Free cash flow forecast</h3><p class="take" style="min-height:0">Starting from TTM revenue of $9,219M and operating income of $2,688M (29.2% margin).</p><div class="cv tall"><canvas id="c-fcff" role="img" aria-label="Bar chart of forecast free cash flow and present value by year"></canvas></div></div>
+<div class="panel"><h3>Value per share: WACC × terminal growth</h3><p class="take" style="min-height:0">Green cells are worth more than the share price, red cells less. Most of the value sits in the terminal period, so the discount rate matters.</p><div class="tw" id="sens"></div></div>
+</div>
+
+<div class="panel"><h3>Football field: valuation ranges against the price</h3><p class="take" style="min-height:0">Each bar is a range of per-share values from a different method. The dashed line is the share price. No comparable-multiple range reaches the price: even at Coca-Cola's multiples Monster is worth $40 (EV/EBITDA) or $30 (P/E). Only the most favorable corners of the DCF do.</p><div class="cv"><canvas id="c-ff" role="img" aria-label="Football field chart of valuation ranges per share with the current price marked"></canvas></div></div>
+
+<div class="panel"><h3>Trading comparables (TTM to mid-2026)</h3><div class="tw"><table class="t"><thead><tr><th></th><th>Monster</th><th>Coca-Cola</th><th>PepsiCo</th></tr></thead><tbody><tr><th scope="row">Share price (see note)</th><td>$44.22</td><td>$91.95</td><td>$129.27</td></tr><tr><th scope="row">TTM revenue</th><td>$9,219M</td><td>$50,129M</td><td>$96,904M</td></tr><tr><th scope="row">TTM revenue growth (latest six months vs prior year)</th><td>23%</td><td>9%</td><td>7%</td></tr><tr><th scope="row">TTM operating margin</th><td>29.2%</td><td>29.6%</td><td>14.8%</td></tr><tr><th scope="row">TTM diluted EPS</th><td>$1.08</td><td>$3.33</td><td>$7.63</td></tr><tr><th scope="row">P/E (TTM)</th><td>40.9x</td><td>27.6x</td><td>16.9x</td></tr><tr><th scope="row">EV / EBITDA (TTM)</th><td>29.3x</td><td>26.7x</td><td>12.2x</td></tr><tr><th scope="row">Free cash flow yield (TTM)</th><td>2.4%</td><td>3.6%</td><td>5.3%</td></tr></tbody></table></div>
+<p class="note" style="margin-top:12px">Enterprise value = market cap + debt + non-controlling interests − cash and investments, from the latest 10-Q balance sheet. Monster's share count is doubled for the split. Coca-Cola's TTM operating cash flow is inflated by the fairlife payment falling in the prior-year half. Coca-Cola's EV includes $20.2B of equity-method investments (FY2025), which flatters its EV/EBITDA comparison.</p></div>
+
+<div class="verdict"><b>Method notes.</b> CAPM: risk-free rate 5.1% (10-year Treasury, mid-October 2026, quoted between 5.1% and 5.2% by different sources), equity risk premium 4.2% (Damodaran implied, Oct 1, 2026), beta 0.66 (Blume-adjusted from a 5-year monthly raw beta of 0.49). A raw beta of 0.49 would give a WACC near 7.2%, which would raise the base value; the sensitivity table covers that range. Share prices were taken from public quote pages on Oct 14–15, 2026 and the PepsiCo quote carries no timestamp, so the price is editable.</div>
+</div></section>
+
+<section id="method"><div class="wrap">
+<div class="num">DATA AND METHOD</div><h2>Sources and integrity checks</h2>
+<div class="grid2"><div class="panel"><h3>SEC filings used</h3><ul class="src"><li><b>Coca-Cola (CIK 21344)</b><span>10-K FY2025 · 0001628280-26-010047; 10-K FY2023 · 0000021344-24-000009; 10-Q quarter ended Jul 3, 2026 · 0001628280-26-050503</span></li><li><b>PepsiCo (CIK 77476)</b><span>10-K FY2025 · 0000077476-26-000007; 10-K FY2023 · 0000077476-24-000008; 10-Q quarter ended Jun 13, 2026 · 0000077476-26-000035</span></li><li><b>Monster Beverage (CIK 865752)</b><span>10-K FY2025 · 0001104659-26-020831; 10-K FY2023 · 0001104659-24-029425; 10-Q period ended Jun 30, 2026 · 0001104659-26-092193; 8-K stock split · 0001104659-26-081842</span></li></ul></div>
+<div class="panel"><h3>How I checked the numbers</h3><ul>
+<li>Every income statement ties: revenue − cost of sales = gross profit; gross profit − operating costs = operating income, for all 15 company-years.</li>
+<li>Balance sheet components never exceed their subtotals; DuPont ROE reproduces net income ÷ equity exactly.</li>
+<li>Computed P/E ratios for Monster (40.9x) and Coca-Cola (27.6x) match the quote pages' own trailing P/E (40.9x and 27.6x), which validates the TTM EPS build and the split adjustment.</li>
+<li>Units differ by filing (Monster in thousands, PepsiCo's FY2023 income statement in dollars) and Coca-Cola and PepsiCo use 52/53-week fiscal years; all are normalised to $ millions.</li></ul>
+<p class="note">Limits: five-year DCF with a single terminal growth rate; no segment or geographic build. This is an educational project, not investment advice.</p></div></div>
+</div></section>
+
+<section id="contact"><div class="wrap"><div class="num">CONTACT</div><h2>Let's talk</h2>
+<p class="sub">Tithi is looking for a finance analyst role. Contact details to be added.</p></div></section>
+</main>
+<footer><div class="wrap">© Tithi Singh. Figures from company filings with the U.S. SEC; educational use only, not investment advice.</div></footer>
+<script id="data" type="application/json">{"years": [2021, 2022, 2023, 2024, 2025], "p1": {"KO": {"rev": [38655, 43004, 45754, 47061, 47941], "rev_cagr": 0.05529857762651691, "gm": [0.6027163368257664, 0.5814342851827737, 0.5952266468505486, 0.6106330082233696, 0.6162574831563797], "om": [0.26666666666666666, 0.2536740768300623, 0.24721335839489444, 0.21232018019166612, 0.28706117936630443], "nm": [0.2527745440434614, 0.2218863361547763, 0.23416531887922368, 0.22589830220352308, 0.2733985523873094], "fcf": [11258, 9534, 9747, 4741, 5296], "fcf_margin": [0.29124304747121976, 0.22170030694819087, 0.2130305547055995, 0.10074159070143006, 0.11046911829123297], "capex_int": [0.035364118484025354, 0.03450841782159799, 0.04047733531494514, 0.04385797156881494, 0.04405414989257629], "cash_conv": [1.1521850373554396, 0.9991616013414378, 0.9097442598469293, 0.4459599285109585, 0.40405889982452126], "eps": [2.25, 2.19, 2.47, 2.46, 3.04], "eps_cagr": 0.07813406012928015, "oi": [10308, 10909, 11311, 9992, 13762], "ni": [9771, 9542, 10714, 10631, 13107], "ebitda": [11760, 12169, 12439, 11067, 14812], "payout_div": [0.7421962951591444, 0.7981555229511633, 0.7422064588389023, 0.7862853917787602, 0.6697947661554894], "shareholder_ret": [7363, 9034, 10241, 10154, 9525], "bs": {"dso": [29.59620035345549, 27.203086068977576, 27.680776014109345, 23.129888821676644], "dio": [85.83583333333333, 87.19006479481641, 94.1781270464964, 87.79284665978149], "cur": [1.1453559115798013, 1.1341054685842773, 1.0296249356410154, 1.4587660354306657], "cash_tot": [11631, 13663, 14571, 15806], "net_debt": [27518, 28401, 29951, 29686], "nd_ebitda": [2.2613197468978554, 2.283222123964949, 2.7063341465618507, 2.0041857953011073], "at": [0.46359000894753294, 0.4682967769669304, 0.46804045788620474, 0.45738246069302396], "em": [3.8482887367766025, 3.766354419644578, 4.045260701641455, 3.258292144611272], "nm": [0.2218863361547763, 0.23416531887922368, 0.22589830220352308, 0.2733985523873094], "roe": [0.3958514830947936, 0.41301414748853166, 0.4277035725780496, 0.4074419472162642]}, "om_adj": [0.2885525805199845, 0.2819272625802251, 0.2898544389561568, 0.30077983893244936, 0.3133643436724307], "capex": [1367, 1484, 1852, 2064, 2112], "div": [7252, 7616, 7952, 8359, 8779], "bb": [111, 1418, 2289, 1795, 746], "ocf": [12625, 11018, 11599, 6805, 7408]}, "PEP": {"rev": [79474, 86392, 91471, 91854, 93925], "rev_cagr": 0.04265116526253587, "gm": [0.5334952311447769, 0.5303268821187147, 0.5421390386023985, 0.5455396607659982, 0.541485227575193], "om": [0.14044844854921107, 0.13325307898879526, 0.1310360660755868, 0.1402987349489407, 0.12241682193239287], "nm": [0.09585524825729169, 0.10313454949532364, 0.09920083961036831, 0.10427417423302197, 0.08772957146659568], "fcf": [6991, 5604, 7924, 7189, 7672], "fcf_margin": [0.08796587563228225, 0.0648671173256783, 0.086628548939008, 0.07826550830666057, 0.08168219323928666], "capex_int": [0.05819513299947152, 0.06027178442448375, 0.060325130369188046, 0.057896226620506454, 0.0470055895661432], "cash_conv": [0.9176949330532949, 0.6289562289562289, 0.8732642715450738, 0.7505742326164127, 0.9310679611650485], "eps": [5.49, 6.42, 6.56, 6.95, 6.0], "eps_cagr": 0.02245623230465621, "oi": [11162, 11512, 11986, 12887, 11498], "ni": [7618, 8910, 9074, 9578, 8240], "ebitda": [13872, 14275, 14934, 16047, 14949], "payout_div": [0.7633237070097139, 0.6927048260381594, 0.7363896848137536, 0.7547504698266861, 0.9269417475728156], "shareholder_ret": [5921, 7672, 7682, 8229, 8638], "bs": {"dso": [42.93794564311511, 43.15548097211138, 41.06021512400113, 44.71322863987224], "dio": [46.97431979495268, 46.486712351663044, 46.39445189727866, 49.53849904797288], "cur": [0.8041441105096135, 0.851581508515815, 0.8189370877727042, 0.8530399218654621], "cash_tot": [5348, 10003, 9266, 9530], "net_debt": [33723, 34102, 35040, 39652], "nd_ebitda": [2.3623817863397547, 2.2835141288335343, 2.1835857169564403, 2.652485116061275], "at": [0.9371386421078894, 0.9102044877854619, 0.9234620527411102, 0.8745425935064572], "em": [5.375648725873229, 5.431281413824785, 5.513386175932598, 5.263108889542291], "nm": [0.10313454949532364, 0.09920083961036831, 0.10427417423302197, 0.08772957146659568], "roe": [0.5195638229634382, 0.49040696103334597, 0.5309018347098277, 0.4038028030971283]}, "om_adj": [0.14044844854921107, 0.13145893138253542, 0.1411704255993703, 0.14065800074030527, 0.143635879691243], "capex": [4625, 5207, 5518, 5318, 4415], "div": [5815, 6172, 6682, 7229, 7638], "bb": [106, 1500, 1000, 1000, 1000], "ocf": [11616, 10811, 13442, 12507, 12087]}, "MNST": {"rev": [5541.352, 6311.05, 7140.027, 7492.709, 8294.343], "rev_cagr": 0.1060927943777612, "gm": [0.5609665294678988, 0.5030172475261644, 0.5313993910667285, 0.54037571724726, 0.558476421821475], "om": [0.32437336592225147, 0.2511025899018388, 0.27357809711363834, 0.2576229772169185, 0.291687237916252], "nm": [0.24858103221018985, 0.18881549029083908, 0.228428828070258, 0.2014021897820935, 0.2297266944470466], "fcf": [1111.873, 698.973, 1496.3249999999998, 1664.4589999999998, 1965.902], "fcf_margin": [0.2006501301487435, 0.1107538365248255, 0.20956853524503477, 0.22214382007895941, 0.23701720558216605], "capex_int": [0.007916479588374823, 0.029904057169567663, 0.031012207656917822, 0.03524412865894031, 0.01594761634526086], "cash_conv": [0.8071819815241656, 0.5865717709613099, 0.9174347082872466, 1.1029861210511527, 1.0317355854210488], "eps": [0.645, 0.56, 0.77, 0.745, 0.97], "eps_cagr": 0.1073961388004725, "oi": [1797.467, 1584.721, 1953.355, 1930.294, 2419.354], "ni": [1377.475, 1191.624, 1630.988, 1509.048, 1905.432], "ebitda": [1847.622, 1645.962, 2022.253, 2010.728, 2533.7949999999996], "payout_div": [0.0, 0.0, 0.0, 0.0, 0.0], "shareholder_ret": [13.83, 771.028, 658.952, 3771.875, 103.646], "bs": {"dso": [58.77216865656269, 61.03574398248073, 59.51129157691831, 71.20470904084868], "dio": [108.8816087955841, 105.97195426772682, 78.12347789424045, 79.69705074726636], "cur": [4.755490639515039, 4.811094879954962, 3.317941648390597, 3.7029686830872093], "cash_tot": [2730.898, 3329.7110000000002, 1533.287, 3252.53], "net_debt": [-2730.898, -3329.7110000000002, -1159.336, -3252.53], "nd_ebitda": [-1.659150089734757, -1.6465353247096186, -0.5765752503570846, -1.2836594910006534], "at": [0.7609996497090054, 0.7371094599279286, 0.9706727050303475, 0.8303522544172584], "em": [1.1805062774722594, 1.177156805461441, 1.2956452453775087, 1.2101786165143464], "nm": [0.18881549029083908, 0.228428828070258, 0.2014021897820935, 0.2297266944470466], "roe": [0.16962520218743204, 0.19820619039795134, 0.2532929554571063, 0.23084650697567805]}, "om_adj": [0.32437336592225147, 0.2511025899018388, 0.27357809711363834, 0.2576229772169185, 0.291687237916252], "capex": [43.868, 188.726, 221.428, 264.074, 132.275], "div": [0, 0, 0, 0, 0], "bb": [13.83, 771.028, 658.952, 3771.875, 103.646], "ocf": [1155.741, 887.699, 1717.753, 1928.533, 2098.177]}}, "ttm": {"KO": {"rev": 50129, "oi": 14854, "da": 1034, "ni": 14316, "eps": 3.3300000000000005, "ocf": 16342, "capex": 2045, "ebitda": 15888, "fcf": 14297, "h1_growth": 0.0924611223799865, "price": 91.95, "mcap": 395660.85000000003, "ev": 424997.85000000003, "pe": 27.612612612612608, "ev_ebitda": 26.74961291540786, "ev_sales": 8.478083544455306, "om": 0.2963155059945341, "fcf_yield": 0.036134482347697526, "shares": 4303, "cash": 16371, "debt": 43543, "mi": 2165}, "PEP": {"rev": 96904, "oi": 14362, "da": 3599, "ni": 10451, "eps": 7.629999999999999, "ocf": 13456, "capex": 4174, "ebitda": 17961, "fcf": 9282, "h1_growth": 0.07329314798868247, "price": 129.27, "mcap": 176582.82, "ev": 219252.82, "pe": 16.94233289646134, "ev_ebitda": 12.207161071209844, "ev_sales": 2.262577602575745, "om": 0.14820853628333197, "fcf_yield": 0.052564569984781075, "shares": 1366, "cash": 10716, "debt": 53214, "mi": 172}, "MNST": {"rev": 9218.957, "oi": 2688.388, "da": 120.22, "ni": 2127.67, "eps": 1.08, "ocf": 2238.762, "capex": 140.846, "ebitda": 2808.6079999999997, "fcf": 2097.916, "h1_growth": 0.23312633158100415, "price": 44.22, "mcap": 86626.0956, "ev": 82425.52560000001, "pe": 40.94444444444444, "ev_ebitda": 29.34746522120567, "ev_sales": 8.94087320290137, "om": 0.2916152011556188, "fcf_yield": 0.024218060221566768, "shares": 1958.98, "cash": 4200.57, "debt": 0, "mi": 0}}, "price": 44.22, "insights": {"revidx": "Monster grew revenue at 10.6% a year from 2021 to 2025, about twice Coca-Cola (5.5%) and PepsiCo (4.3%).", "epsidx": "EPS tells a sharper story than revenue: Monster 10.7% a year, Coca-Cola 7.8%, PepsiCo only 2.2% because its FY2025 EPS fell to $6.00 from $6.95.", "gm": "Coca-Cola's gross margin is the highest (61.6% in FY2025). Monster dropped to 50.3% in 2022 and has rebuilt to 55.8%; PepsiCo sits at 54.1%.", "om": "Coca-Cola and Monster both earn roughly 29 cents of operating profit per dollar of sales (28.7% and 29.2%); PepsiCo earns 12.2%, down from 14.0% in 2021.", "nm": "Net margin: Monster 23.0%, Coca-Cola 27.3% (helped by about $2.0B of equity-method income), PepsiCo 8.8%.", "fcf_margin": "Free cash flow (operating cash flow minus capex) as a share of revenue in FY2025: Monster 23.7%, PepsiCo 8.2%, Coca-Cola 11.0%. Coca-Cola's FY2025 figure is depressed by a one-off $6.1B payment (see the cash chart).", "capex_int": "Monster is asset-light, spending 1.6% of revenue on capex against 4.4% at Coca-Cola and 4.7% at PepsiCo, which also runs a food and manufacturing network."}, "quality": {"KO": "Coca-Cola's reported margin dipped to 21.2% in 2024 because other operating charges jumped to $4,163M. Before those charges the margin held at 30.1%, so the business was steady and the dip was an accounting event.", "PEP": "PepsiCo took $1,993M of impairment charges in FY2025. Before them margin was 14.4%, versus 14.0% in 2021, so the underlying margin has also slipped.", "MNST": "Monster reports no separate impairment line, so reported and underlying margins match. Operating margin dipped to 25.1% in 2022 and has climbed to 29.2%."}, "dupont": ["2022: PepsiCo ROE 52% and Coca-Cola 40% are driven by different levers. Coca-Cola leans on margin (22% net); PepsiCo leans on leverage (5.4x equity multiplier). Monster's 17% is held down by low leverage (1.2x equity multiplier) and a large cash balance.", "2023: PepsiCo ROE 49% and Coca-Cola 41% are driven by different levers. Coca-Cola leans on margin (23% net); PepsiCo leans on leverage (5.4x equity multiplier). Monster's 20% is held down by low leverage (1.2x equity multiplier) and a large cash balance.", "2024: PepsiCo ROE 53% and Coca-Cola 43% are driven by different levers. Coca-Cola leans on margin (23% net); PepsiCo leans on leverage (5.5x equity multiplier). Monster's 25% is held down by low leverage (1.3x equity multiplier) and a large cash balance.", "2025: PepsiCo ROE 40% and Coca-Cola 41% are driven by different levers. Coca-Cola leans on margin (27% net); PepsiCo leans on leverage (5.3x equity multiplier). Monster's 23% is held down by low leverage (1.2x equity multiplier) and a large cash balance."], "wc": {"dso": "PepsiCo collects slowest (45 days of sales outstanding in FY2025), Monster 71 days, Coca-Cola 23. Monster's was 59 days in 2022.", "dio": "Monster cut inventory days from 109 (2022) to 80 (2025). Coca-Cola (88) and PepsiCo (50) are flat. Payables are not compared because Coca-Cola and PepsiCo report payables combined with accrued liabilities.", "cur": "Liquidity: Monster's current ratio is 3.7x versus 1.5x at Coca-Cola and 0.9x at PepsiCo, both of which also carry short-term debt."}, "cash": {"KO": "Coca-Cola paid $8,779M of dividends and bought back $746M in FY2025 against free cash flow of $5,296M. The company's release attributes the weak year to a $6.1B contingent-consideration payment for fairlife; excluding it, it reports free cash flow of $11.4B, which covers the dividend.", "PEP": "PepsiCo returned $8,638M (dividends $7,638M plus buybacks $1,000M) in FY2025 against free cash flow of $7,672M, i.e. 113% of free cash flow. The payout was therefore not covered by free cash flow that year.", "MNST": "Monster pays no dividend. FY2025 free cash flow was $1,966M and it spent only $104M on buybacks, after a $3,772M repurchase in 2024. Cash and investments grew to $3,253M."}, "dcf": {"assump": {"rev0": 9218.957, "g": [0.15, 0.1275, 0.105, 0.08249999999999999, 0.06], "m": [0.29, 0.29, 0.29, 0.29, 0.29], "tax": 0.24, "da": 0.013, "capex": 0.016, "nwc": 0.15, "wacc": 0.07872, "tg": 0.03, "cash": 4200.57, "debt": 0, "shares": 1958.98}, "coe": 0.07872}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>(function(){
+'use strict';
+var D = JSON.parse(document.getElementById('data').textContent);
+var $ = function(s,r){return (r||document).querySelector(s)};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var CO = ['KO','PEP','MNST'];
+var NAMES = {KO:'Coca-Cola',PEP:'PepsiCo',MNST:'Monster'};
+var charts = {};
+
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function col(t){return css('--c-'+t.toLowerCase())}
+var POINT = {KO:'circle',PEP:'rect',MNST:'triangle'};
+var DASH = {KO:[],PEP:[7,4],MNST:[2,3]};
+function pct(x,d){return (x*100).toFixed(d==null?1:d)+'%'}
+function usd(x,d){return '$'+x.toFixed(d==null?2:d)}
+function bn(x){return '$'+(x/1000).toFixed(1)+'B'}
+
+/* ---------- chart plumbing ---------- */
+
+function base(){
+  var C=window.Chart; if(!C) return;
+  C.defaults.font.family="'IBM Plex Sans',system-ui,sans-serif";
+  C.defaults.font.size=12; C.defaults.color=css('--muted');
+  C.defaults.borderColor=css('--rule');
+}
+function mk(id,cfg){
+  if(!window.Chart) return;
+  if(charts[id]) charts[id].destroy();
+  cfg.options=cfg.options||{}; cfg.options.maintainAspectRatio=false;
+  charts[id]=new Chart(document.getElementById(id),cfg);
+}
+function ds(t,data,extra){
+  return Object.assign({label:NAMES[t],data:data,borderColor:col(t),backgroundColor:col(t),pointStyle:POINT[t],
+    pointRadius:5,pointHoverRadius:7,borderWidth:2.5,borderDash:DASH[t],tension:.2},extra||{});
+}
+function scale(fmt,extra){return Object.assign({grid:{color:css('--rule')},ticks:{callback:fmt}},extra||{})}
+function chips(root,items,cb,initial){
+  root.innerHTML=''; var cur=initial==null?0:initial;
+  items.forEach(function(it,i){
+    var b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=it.label;
+    b.setAttribute('aria-pressed',i===cur); b.onclick=function(){
+      $$('button',root).forEach(function(x,j){x.setAttribute('aria-pressed',j===i)}); cb(it,i)};
+    root.appendChild(b);
+  });
+  cb(items[cur],cur);
+}
+
+var saved=null; try{saved=localStorage.getItem('th')}catch(e){}
+var dark=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
+document.documentElement.setAttribute('data-theme',saved||(dark?'dark':'light'));
+base();
+
+/* ---------- Project 1 ---------- */
+var P=D.p1, Y=D.years;
+function idx(a){return a.map(function(v){return v/a[0]*100})}
+var METRICS=[
+  {label:'Revenue (2021 = 100)',k:'revidx',f:function(t){return idx(P[t].rev)},fmt:function(v){return v.toFixed(0)}},
+  {label:'EPS (2021 = 100)',k:'epsidx',f:function(t){return idx(P[t].eps)},fmt:function(v){return v.toFixed(0)}},
+  {label:'Gross margin',k:'gm',f:function(t){return P[t].gm},fmt:pct},
+  {label:'Operating margin',k:'om',f:function(t){return P[t].om},fmt:pct},
+  {label:'Net margin',k:'nm',f:function(t){return P[t].nm},fmt:pct},
+  {label:'Free cash flow margin',k:'fcf_margin',f:function(t){return P[t].fcf_margin},fmt:pct},
+  {label:'Capex % of revenue',k:'capex_int',f:function(t){return P[t].capex_int},fmt:pct}
+];
+chips($('#chips-trend'),METRICS,function(m){
+  $('#take-trend').textContent=D.insights[m.k];
+  mk('c-trend',{type:'line',data:{labels:Y,datasets:CO.map(function(t){return ds(t,m.f(t))})},
+   options:{interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true}},
+    tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+m.fmt(c.parsed.y)}}}},
+    scales:{x:{grid:{display:false}},y:scale(function(v){return m.fmt(v)})}}});
+});
+
+chips($('#chips-quality'),CO.map(function(t){return {label:NAMES[t],t:t}}),function(it){
+  var t=it.t,p=P[t];
+  $('#take-quality').textContent=D.quality[t];
+  mk('c-quality',{type:'bar',data:{labels:Y,datasets:[
+    {label:'Reported operating margin',data:p.om,backgroundColor:col(t)},
+    {label:'Before impairments & other operating charges',data:p.om_adj,backgroundColor:css('--rule-strong')}]},
+   options:{plugins:{legend:{labels:{usePointStyle:true}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+pct(c.parsed.y)}}}},
+    scales:{x:{grid:{display:false}},y:scale(function(v){return pct(v,0)},{min:0})}}});
+});
+
+chips($('#chips-dupont'),[2022,2023,2024,2025].map(function(y,i){return {label:String(y),i:i}}),function(it){
+  var i=it.i;
+  mk('c-dupont',{type:'bar',data:{labels:CO.map(function(t){return NAMES[t]}),datasets:[{label:'ROE',
+    data:CO.map(function(t){return P[t].bs.roe[i]}),backgroundColor:CO.map(col)}]},
+   options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return 'ROE '+pct(c.parsed.x)}}}},
+    scales:{x:scale(function(v){return pct(v,0)},{min:0}),y:{grid:{display:false}}}}});
+  var h='<table class="t"><thead><tr><th></th><th>Net margin</th><th class="x">×</th><th>Asset turnover</th><th class="x">×</th><th>Equity multiplier</th><th class="x">=</th><th>ROE</th></tr></thead><tbody>';
+  CO.forEach(function(t){var b=P[t].bs;
+    h+='<tr><th scope="row">'+NAMES[t]+'</th><td>'+pct(b.nm[i])+'</td><td class="x">×</td><td>'+b.at[i].toFixed(2)+'x</td><td class="x">×</td><td>'+b.em[i].toFixed(2)+'x</td><td class="x">=</td><td><b>'+pct(b.roe[i])+'</b></td></tr>'});
+  $('#dupont-table').innerHTML=h+'</tbody></table>';
+  $('#take-dupont').textContent=D.dupont[i];
+});
+
+var WCM=[{label:'Days sales outstanding',k:'dso',fmt:function(v){return v.toFixed(0)+' days'}},
+  {label:'Days inventory',k:'dio',fmt:function(v){return v.toFixed(0)+' days'}},
+  {label:'Current ratio',k:'cur',fmt:function(v){return v.toFixed(2)+'x'}}];
+chips($('#chips-wc'),WCM,function(m){
+  $('#take-wc').textContent=D.wc[m.k];
+  mk('c-wc',{type:'bar',data:{labels:[2022,2023,2024,2025],datasets:CO.map(function(t){return {label:NAMES[t],data:P[t].bs[m.k],backgroundColor:col(t)}})},
+   options:{plugins:{legend:{labels:{usePointStyle:true}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+m.fmt(c.parsed.y)}}}},
+    scales:{x:{grid:{display:false}},y:scale(function(v){return m.k==='cur'?v.toFixed(1):v},{beginAtZero:true})}}});
+});
+
+drawLev();
+
+chips($('#chips-cash'),CO.map(function(t){return {label:NAMES[t],t:t}}),function(it){
+  var t=it.t,p=P[t];
+  $('#take-cash').textContent=D.cash[t];
+  mk('c-cash',{data:{labels:Y,datasets:[
+    {type:'bar',label:'Capex',data:p.capex,backgroundColor:css('--rule-strong'),stack:'u'},
+    {type:'bar',label:'Dividends',data:p.div,backgroundColor:col(t),stack:'u'},
+    {type:'bar',label:'Buybacks',data:p.bb,backgroundColor:css('--accent-soft'),stack:'u'},
+    {type:'line',label:'Operating cash flow',data:p.ocf,borderColor:css('--ink'),backgroundColor:css('--ink'),borderWidth:2.5,pointStyle:'rectRot',pointRadius:5,tension:.15}]},
+   options:{interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true}},
+    tooltip:{callbacks:{label:function(c){return c.dataset.label+': $'+Math.round(c.parsed.y).toLocaleString()+'M'}}}},
+    scales:{x:{stacked:true,grid:{display:false}},y:scale(function(v){return '$'+(v/1000)+'B'},{stacked:true,beginAtZero:true})}}});
+});
+
+/* ---------- Project 2: live DCF ---------- */
+var A=D.dcf.assump, price=D.price;
+var S={g1:A.g[0],g5:A.g[4],m:A.m[0],w:D.dcf.coe,tg:A.tg,px:price};
+var SC={bear:{g1:.10,g5:.05,m:.275,tg:.025},base:{g1:A.g[0],g5:A.g[4],m:A.m[0],tg:A.tg},bull:{g1:.20,g5:.08,m:.31,tg:.035}};
+function dcf(s,over){
+  var o=Object.assign({},s,over||{}), rev=A.rev0, pv=0, rows=[], f=0;
+  for(var i=0;i<5;i++){
+    var g=o.g1+(o.g5-o.g1)*i/4, prev=rev; rev=rev*(1+g);
+    var nopat=rev*o.m*(1-A.tax); f=nopat+rev*A.da-rev*A.capex-(rev-prev)*A.nwc;
+    var df=1/Math.pow(1+o.w,i+1); pv+=f*df; rows.push({rev:rev,g:g,fcff:f,pv:f*df});
+  }
+  var tv=f*(1+o.tg)/(o.w-o.tg), pvtv=tv/Math.pow(1+o.w,5), ev=pv+pvtv, eq=ev+A.cash-A.debt;
+  return {rows:rows,pv:pv,pvtv:pvtv,ev:ev,eq:eq,ps:eq/A.shares};
+}
+function implied(s){
+  var lo=-.2,hi=1,t=s.px;
+  for(var i=0;i<60;i++){var mid=(lo+hi)/2; if(dcf(s,{g1:mid,g5:mid}).ps<t) lo=mid; else hi=mid}
+  return (lo+hi)/2;
+}
+function setOut(id,v){$('#'+id).textContent=v}
+function recalc(){
+  var r=dcf(S), up=r.ps/S.px-1;
+  setOut('o-ps',usd(r.ps)); setOut('o-px',usd(S.px));
+  var u=$('#o-up'); u.textContent=(up>=0?'+':'')+(up*100).toFixed(0)+'% '+(up>=0?'above':'below')+' price'; u.className='up '+(up>=0?'pos':'neg');
+  setOut('o-ev',bn(r.ev)); setOut('o-tv',pct(r.pvtv/r.ev,0));
+  var im=implied(S); setOut('o-imp',pct(im,1)); 
+    var m=D.ttm.MNST;
+  $('#lb-g1').textContent=pct(S.g1,1); $('#lb-g5').textContent=pct(S.g5,1); $('#lb-m').textContent=pct(S.m,1);
+  $('#lb-w').textContent=pct(S.w,2); $('#lb-tg').textContent=pct(S.tg,1);
+  /* fcff chart */
+  mk('c-fcff',{type:'bar',data:{labels:r.rows.map(function(_,i){return 'Year '+(i+1)}),datasets:[
+    {label:'Free cash flow to firm',data:r.rows.map(function(x){return x.fcff}),backgroundColor:css('--accent')},
+    {label:'Present value',data:r.rows.map(function(x){return x.pv}),backgroundColor:css('--rule-strong')}]},
+   options:{plugins:{legend:{labels:{usePointStyle:true}},tooltip:{callbacks:{
+     afterTitle:function(it){var x=r.rows[it[0].dataIndex];return 'Revenue $'+Math.round(x.rev).toLocaleString()+'M, growth '+pct(x.g)},
+     label:function(c){return c.dataset.label+': $'+Math.round(c.parsed.y).toLocaleString()+'M'}}}},
+    scales:{x:{grid:{display:false}},y:scale(function(v){return '$'+(v/1000)+'B'},{beginAtZero:true})}}});
+  /* sensitivity */
+  var ws=[-.01,-.005,0,.005,.01].map(function(d){return S.w+d}), gs=[.02,.025,.03,.035,.04];
+  var h='<table class="t heat"><thead><tr><th>WACC ↓ &nbsp; Terminal growth →</th>'+gs.map(function(g){return '<th>'+pct(g,1)+'</th>'}).join('')+'</tr></thead><tbody>';
+  var lo=1e9,hi=-1e9;
+  ws.forEach(function(w){h+='<tr><th scope="row">'+pct(w,2)+'</th>'+gs.map(function(g){
+    var v=dcf(S,{w:w,tg:g}).ps; lo=Math.min(lo,v);hi=Math.max(hi,v);
+    var d=v/S.px-1, a=Math.min(.55,Math.abs(d)*.9);
+    var bg=(d>=0?'rgba(15,132,92,':'rgba(196,60,50,')+a.toFixed(2)+')';
+    return '<td style="background:'+bg+'">'+usd(v)+'<small>'+(d>=0?'▲':'▼')+Math.abs(d*100).toFixed(0)+'%</small></td>'}).join('')+'</tr>'});
+  $('#sens').innerHTML=h+'</tbody></table>';
+  /* football field */
+  var e=m.ebitda, sh=m.shares, cash=m.cash;
+  function evps(x){return (x*e+cash)/sh}
+  var sc={bear:dcf(S,SC.bear).ps,bull:dcf(S,SC.bull).ps};
+  var rows=[
+   ['DCF: WACC ±1%, terminal growth 2–4%',lo,hi],
+   ['DCF: bear to bull scenario',Math.min(sc.bear,sc.bull),Math.max(sc.bear,sc.bull)],
+   ['EV/EBITDA at PepsiCo to Coca-Cola multiple',evps(D.ttm.PEP.ev_ebitda),evps(D.ttm.KO.ev_ebitda)],
+   ['P/E at PepsiCo to Coca-Cola multiple',D.ttm.PEP.pe*m.eps,D.ttm.KO.pe*m.eps]];
+  var pl={id:'pxline',afterDatasetsDraw:function(ch){
+    var x=ch.scales.x.getPixelForValue(S.px), a=ch.chartArea, c=ch.ctx;
+    c.save(); c.strokeStyle=css('--neg'); c.lineWidth=2; c.setLineDash([5,4]); c.beginPath(); c.moveTo(x,a.top); c.lineTo(x,a.bottom); c.stroke();
+    c.setLineDash([]); c.fillStyle=css('--neg'); c.font="600 12px 'IBM Plex Sans'"; c.textAlign='center'; c.fillText('Price '+usd(S.px),x,a.top-6); c.restore();}};
+  mk('c-ff',{type:'bar',plugins:[pl],data:{labels:rows.map(function(r){return r[0]}),datasets:[{label:'Value per share',
+    data:rows.map(function(r){return [r[1],r[2]]}),backgroundColor:css('--accent'),borderSkipped:false,borderRadius:3,barThickness:26}]},
+   options:{indexAxis:'y',layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return usd(c.raw[0])+' to '+usd(c.raw[1])}}}},
+    scales:{x:scale(function(v){return '$'+v},{min:0,suggestedMax:Math.max(70,S.px*1.3)}),y:{grid:{display:false},ticks:{callback:function(v){var l=this.getLabelForValue(v);return l.length>34?l.match(/.{1,34}(\s|$)/g).map(function(s){return s.trim()}):l}}}}}});
+}
+function bind(id,key,scalef){
+  var el=$('#'+id); el.addEventListener('input',function(){S[key]=parseFloat(el.value)*(scalef||1);recalc()});
+}
+function sync(){
+  $('#s-g1').value=S.g1*100; $('#s-g5').value=S.g5*100; $('#s-m').value=S.m*100; $('#s-w').value=S.w*100;
+  $('#s-tg').value=S.tg*100; $('#s-px').value=S.px;
+}
+bind('s-g1','g1',.01); bind('s-g5','g5',.01); bind('s-m','m',.01); bind('s-w','w',.01); bind('s-tg','tg',.01);
+$('#s-px').addEventListener('input',function(){var v=parseFloat(this.value); if(v>0){S.px=v;recalc()}});
+$$('[data-scn]').forEach(function(b){b.onclick=function(){
+  var k=b.getAttribute('data-scn'); Object.assign(S,SC[k]); sync(); recalc();
+  $$('[data-scn]').forEach(function(x){x.setAttribute('aria-pressed',x===b)})}});
+$('#reset').onclick=function(){S={g1:A.g[0],g5:A.g[4],m:A.m[0],w:D.dcf.coe,tg:A.tg,px:price};sync();recalc();
+  $$('[data-scn]').forEach(function(x){x.setAttribute('aria-pressed',x.getAttribute('data-scn')==='base')})};
+
+/* ---------- theme ---------- */
+var tb=$('#theme');
+function setTheme(t){document.documentElement.setAttribute('data-theme',t); try{localStorage.setItem('th',t)}catch(e){}; tb.textContent=t==='dark'?'Light':'Dark'; tb.setAttribute('aria-pressed',t==='dark');
+  if(window.Chart){base(); redraw();}}
+function redraw(){ $$('.chips').forEach(function(c){var p=$$('button[aria-pressed="true"]',c)[0]; if(p) p.click()}); recalc(); drawLev(); }
+function drawLev(){
+  mk('c-lev',{type:'line',data:{labels:[2022,2023,2024,2025],datasets:CO.map(function(t){return ds(t,P[t].bs.nd_ebitda)})},
+   options:{interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true}},
+    tooltip:{callbacks:{label:function(c){var v=c.parsed.y;return c.dataset.label+': '+(v<0?'net cash '+Math.abs(v).toFixed(1)+'x EBITDA':v.toFixed(1)+'x EBITDA')}}}},
+    scales:{x:{grid:{display:false}},y:scale(function(v){return v+'x'})}}});
+}
+tb.onclick=function(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')};
+tb.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'Light':'Dark';
+sync(); recalc();
+window.__dcf=function(){return dcf(S)};
+})();
+</script>
+
+</body></html>
